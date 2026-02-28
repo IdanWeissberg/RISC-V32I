@@ -1,0 +1,13 @@
+work/
+rtl_work/
+transcript
+*.wlf
+vsim.wlf
+*.log
+_pycache_/
+*.pyc
+results.xml
+.pytest_cache/
+.vscode/
+.DS_Store
+Thumbs.db
