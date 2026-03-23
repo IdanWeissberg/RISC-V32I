@@ -47,13 +47,13 @@
 `define ALU_CTRL_SUB        4'b0110
 `define ALU_CTRL_AND        4'b0000
 `define ALU_CTRL_OR         4'b0001
-`define ALU_CTRL_XOR        4'b0011 // הרחבה
+`define ALU_CTRL_XOR        4'b0011 // 
 `define ALU_CTRL_SLL        4'b0100 // Shift Left Logical
 `define ALU_CTRL_SRL        4'b0101 // Shift Right Logical
 `define ALU_CTRL_SRA        4'b0111 // Shift Right Arithmetic
 `define ALU_CTRL_SLT        4'b1000 // Set Less Than (Signed)
 `define ALU_CTRL_SLTU       4'b1001 // Set Less Than Unsigned
-`define ALU_CTRL_LUI        4'b1111 // Pass Immediate (LUI) - אופציונלי
+`define ALU_CTRL_LUI        4'b1111 // Pass Immediate (LUI) 
 
 // -----------------------------------------------------------------
 // 5. ALUOp Codes (Input from Main Control)
