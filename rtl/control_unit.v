@@ -86,22 +86,33 @@ always @(*) begin
         jalr=1'b1;
         mem_read=1'b0;
         branch=1'b0;
-        mem_to_reg=2'b00;
+        mem_to_reg=2'b10;
         mem_write=1'b0;
         alu_op=2'b00;
         alu_src=1'b1;
-        reg_write=1'b0; 
+        reg_write=1'b1; 
+     end
+     `OPCODE_AUIPC : begin
+        jal_branch_mux=1'b0;
+        jalr=1'b0;
+        mem_read=1'b0;
+        branch=1'b0;
+        mem_to_reg=2'b11;
+        mem_write=1'b0;
+        alu_op=2'b00;
+        alu_src=1'b0;
+        reg_write=1'b1;
      end
         default: begin
         jal_branch_mux=1'b0;
         jalr=1'b0;
         mem_read=1'b0;
         branch=1'b0;
-        mem_to_reg=2'b10;
+        mem_to_reg=2'b00;
         mem_write=1'b0;
         alu_op=2'b00;
         alu_src=1'b0;
-        reg_write=1'b1; 
+        reg_write=1'b0; 
         end
     endcase    
 end

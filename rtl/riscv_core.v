@@ -8,7 +8,7 @@ wire [31:0] i_mem_to_decode;          // Fetched instruction (32-bit)
 wire [31:0]read_data_1_to_alu;        // Register rs1 value → ALU operand A
 wire [31:0] read_data_2_c ;           // Register rs2 value → ALU operand B or store data
 wire [31:0] alu_res_to_d_mem;         // ALU result → data memory address or writeback
-wire zero_c;                          // ALU zero flag (1 when result==0, used for branches)
+wire branch_decision_c;                          // ALU zero flag (1 when result==0, used for branches)
 wire [31:0] d_mem_to_alu_mem_to_reg;  // Data memory read output → writeback mux
 // all the control lines
 wire mem_read_c,branch_c,mem_write_c,alu_src_c,reg_write_c; // control lines
@@ -23,7 +23,7 @@ wire [31:0] imm_gen_to_alu_mux;       // Sign-extended immediate from instructio
 wire jal_or_branch_c;                 // CU output: 1=conditional branch, 0=unconditional JAL
 wire [31:0] pc_plus_4_c;             // PC+4 value from fetch unit → JAL return address writeback
 wire jal_branch_mux_c ,jalr_c;
-assign jal_branch_mux_c=(jal_or_branch_c)? zero_c : 1'b1; // Branch: use zero flag; JAL: always 1
+assign jal_branch_mux_c=(jal_or_branch_c)? branch_decision_c : 1'b1; // Branch: use zero flag; JAL: always 1
 assign pc_sel_c={jal_branch_mux_c & branch_c,jalr_c};    // Take jump only when branch signal and condition both active
 assign jump_add_c = fetch_to_imem + imm_gen_to_alu_mux;    // Compute branch/jump target address
 always @(*) begin
@@ -31,6 +31,7 @@ always @(*) begin
         2'b00: alu_mem_to_reg = alu_res_to_d_mem;        // R-type / I-type: write ALU result
         2'b01: alu_mem_to_reg = d_mem_to_alu_mem_to_reg; // Load: write memory data
         2'b10: alu_mem_to_reg = pc_plus_4_c;             // JAL: write return address (PC+4)
+        2'b11: alu_mem_to_reg = jump_add_c;
         default: alu_mem_to_reg = alu_res_to_d_mem;      // Default: ALU result
     endcase
 
@@ -47,6 +48,12 @@ fetch_unit u_fetch_unit(
 instruction_memory u_instruction_memory (
     .addr (fetch_to_imem),            // PC as instruction address
     .instruction (i_mem_to_decode)    // 32-bit instruction output
+);
+branch_comparator u_branch_comparator(
+    .rs_1 (read_data_1_to_alu),
+    .rs_2 (read_data_2_c),
+    .instruction (i_mem_to_decode),
+    .branch_decision (branch_decision_c)
 );
 control_unit u_control_unit(
     .op_code (i_mem_to_decode[6:0]),  // Instruction opcode bits [6:0]
@@ -85,8 +92,7 @@ alu_unit u_alu_unit(
     .alu_op_in (alu_control_to_alu),  // 4-bit operation select
     .alu_mux (alu_src_mux),           // Operand B (rs2 or immediate)
     .read_data_1 (read_data_1_to_alu),// Operand A (rs1)
-    .alu_result (alu_res_to_d_mem),   // Result output
-    .zero (zero_c)                    // Zero flag output
+    .alu_result (alu_res_to_d_mem)    // Result output
 );
 data_memory u_data_memory(
     .clk (clk),

@@ -3,7 +3,6 @@ module alu_unit (
     input wire [31:0] read_data_1,
     input wire [31:0] alu_mux,
     input wire [3:0] alu_op_in,
-    output wire zero,
     output reg [31:0] alu_result
 );
 
@@ -25,6 +24,5 @@ always @(*) begin
         `ALU_CTRL_LUI:alu_result=alu_mux;
     endcase
 end
-assign zero = (alu_result==32'b0);
 
 endmodule
