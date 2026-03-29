@@ -4,12 +4,16 @@ module alu_control (
     input wire [1:0] alu_op,
     input wire [2:0] funct_3,
     input wire [6:0] funct_7,
+    input wire lui,
     output reg [3:0] alu_op_output
 );
 
 always @(*) begin
     alu_op_output = 4'b0000; // defult pre assignment
 
+    if (lui) begin
+        alu_op_output = `ALU_CTRL_LUI;
+    end else
     case (alu_op)
         `ALUOP_BRANCH: begin
             alu_op_output = `ALU_CTRL_SUB;

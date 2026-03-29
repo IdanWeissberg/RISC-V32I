@@ -11,7 +11,7 @@ wire [31:0] alu_res_to_d_mem;         // ALU result → data memory address or w
 wire branch_decision_c;                          // ALU zero flag (1 when result==0, used for branches)
 wire [31:0] d_mem_to_alu_mem_to_reg;  // Data memory read output → writeback mux
 // all the control lines
-wire mem_read_c,branch_c,mem_write_c,alu_src_c,reg_write_c; // control lines
+wire mem_read_c,branch_c,mem_write_c,alu_src_c,reg_write_c,lui_c; // control lines
 wire [1:0] mem_to_reg_c;              // Writeback select: 00=ALU, 01=MEM, 10=PC+4 (JAL)
 wire [1:0] alu_op_c;                  // ALU operation group from control unit
 wire [3:0] alu_control_to_alu;        // Final 4-bit ALU operation code
@@ -53,7 +53,7 @@ branch_comparator u_branch_comparator(
     .rs_1 (read_data_1_to_alu),
     .rs_2 (read_data_2_c),
     .instruction (i_mem_to_decode),
-    .branch_decision (branch_decision_c)
+    .branch_decision (branch_decision_c  )
 );
 control_unit u_control_unit(
     .op_code (i_mem_to_decode[6:0]),  // Instruction opcode bits [6:0]
@@ -65,7 +65,8 @@ control_unit u_control_unit(
     .reg_write (reg_write_c),         // 1 = write result to register file
     .alu_op (alu_op_c),               // ALU operation group (2-bit)
     .jal_branch_mux (jal_or_branch_c), // 1 = conditional branch, 0 = JAL
-    .jalr (jalr_c)
+    .jalr (jalr_c),
+    .lui (lui_c)
 );
 register_file u_register_file(
     .clk (clk),
@@ -81,6 +82,7 @@ alu_control u_alu_control (
     .alu_op (alu_op_c),               // Operation group from control unit
     .funct_3 (i_mem_to_decode[14:12]),// funct3 field from instruction
     .funct_7 (i_mem_to_decode[31:25]),// funct7 field from instruction
+    .lui (lui_c),                     // LUI pass-through override
     .alu_op_output (alu_control_to_alu)// 4-bit ALU control signal
 );
 imm_gen u_imm_gen(
@@ -94,7 +96,7 @@ alu_unit u_alu_unit(
     .read_data_1 (read_data_1_to_alu),// Operand A (rs1)
     .alu_result (alu_res_to_d_mem)    // Result output
 );
-data_memory u_data_memory(
+data_mem u_data_memory(
     .clk (clk),
     .add_in (alu_res_to_d_mem),       // Memory address from ALU result
     .write_data (read_data_2_c),      // Store data from rs2

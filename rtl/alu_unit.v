@@ -18,7 +18,6 @@ always @(*) begin
         `ALU_CTRL_SLL:alu_result= read_data_1 << alu_mux[4:0];
         `ALU_CTRL_SRL:alu_result= read_data_1 >> alu_mux[4:0];
         `ALU_CTRL_SRA:alu_result=$signed(read_data_1) >>> alu_mux[4:0];
-        //
         `ALU_CTRL_SLT:alu_result=($signed(read_data_1) < $signed(alu_mux))?32'b1:32'b0; 
         `ALU_CTRL_SLTU:alu_result=($unsigned(read_data_1) < $unsigned(alu_mux))?32'b1:32'b0;
         `ALU_CTRL_LUI:alu_result=alu_mux;
