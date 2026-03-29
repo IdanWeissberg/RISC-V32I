@@ -18,7 +18,7 @@ always @(*) begin
         `OPCODE_LUI,`OPCODE_AUIPC: immediate={instruction[31:12],12'b0};
         //J-Type
         `OPCODE_JAL:immediate={{11{instruction[31]}},instruction[31],instruction[19:12],instruction[20],instruction[30:21],1'b0};
-
+        default: immediate=32'b0;
     endcase  
 end
     

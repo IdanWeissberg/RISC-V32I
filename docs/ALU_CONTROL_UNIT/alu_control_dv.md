@@ -33,5 +33,10 @@ The verification is designed to validate **Functional Correctness** for all R-Ty
 ### TC_05: I-Type Logic & Shifts
 * **Inputs:** `alu_op = ALUOP_I_TYPE` (11), sweeping through the remaining `funct_3` codes (`SLL`, `SLT`, `SLTU`, `XOR`, `OR`, `AND`, `SRL_SRA`).
 * **Expected Output:** The corresponding `ALU_CTRL_*` signals.
-* **Description:** Verifies all I-Type immediate logic operations. 
+* **Description:** Verifies all I-Type immediate logic operations.
   * Crucially checks the RISC-V exception where I-Type shifts (`SRLI` vs `SRAI`) *do* rely on `funct_7` (bit 30) for differentiation.
+
+### TC_06: LUI Override (Priority Check)
+* **Inputs:** `lui = 1`, `alu_op = ALUOP_R_TYPE` (10), `funct_3 = 000`, `funct_7 = 0000000` (would normally decode to ADD)
+* **Expected Output:** `alu_op_output = ALU_CTRL_LUI` (4'b1111)
+* **Description:** Verifies that asserting `lui` unconditionally overrides the `alu_op` case decode. Even with inputs that would normally produce `ALU_CTRL_ADD`, the output must be `ALU_CTRL_LUI`. Tests the priority of the `if (lui)` guard over the `case` statement.

@@ -4,11 +4,13 @@ module alu_control_tb ();
 reg [1:0] alu_op_tb;             // ALU operation type driven by control unit (2-bit)
 reg [2:0] funct_3_tb;            // funct3 field from instruction bits [14:12]
 reg  [6:0] funct_7_tb;           // funct7 field from instruction bits [31:25]
+reg lui_tb;                      // LUI override signal from main control unit
 wire [3:0] alu_op_output_tb;     // Resulting 4-bit ALU control signal output
 alu_control uut(                 // Instantiate Unit Under Test
     .alu_op (alu_op_tb),
     .funct_3 (funct_3_tb),
     .funct_7 (funct_7_tb),
+    .lui (lui_tb),
     .alu_op_output (alu_op_output_tb)
 );
 integer errors;                  // Counts how many test cases failed
@@ -35,6 +37,7 @@ task check_alu_out;
 endtask
 initial begin
     errors=0;                    // Initialize error counter
+    lui_tb=0;                    // Ensure LUI override is inactive for all standard tests
 //ALUOP_BRANCH test
 check_alu_out(`ALUOP_BRANCH,3'b000,7'b0000000,`ALU_CTRL_SUB,"ALUOP_BRANCH test");           // Branch uses SUB to evaluate condition (zero flag)
 //ALUOP_MEM_test
@@ -60,6 +63,10 @@ check_alu_out(`ALUOP_I_TYPE,`FUNCT3_SRL_SRA,`FUNCT7_NORMAL,`ALU_CTRL_SRL,"ALUOP_
 check_alu_out(`ALUOP_I_TYPE, `FUNCT3_SRL_SRA, `FUNCT7_ALT, `ALU_CTRL_SRA, "ALUOP_RTYPE SRAI test"); // SRAI: shift right arithmetic immediate (funct7=0100000)
 check_alu_out(`ALUOP_I_TYPE,`FUNCT3_OR,7'b0000000, `ALU_CTRL_OR,"ALUOP_RTYPE ORI test");           // ORI:  bitwise or with immediate
 check_alu_out(`ALUOP_I_TYPE,`FUNCT3_AND,7'b0000000, `ALU_CTRL_AND,"ALUOP_RTYPE ANDI test");        // ANDI: bitwise and with immediate
+//TC_06: LUI Override Priority Check
+lui_tb=1;
+check_alu_out(`ALUOP_R_TYPE,`FUNCT3_ADD_SUB,`FUNCT7_NORMAL,`ALU_CTRL_LUI,"LUI override test"); // lui=1 must force ALU_CTRL_LUI regardless of alu_op/funct fields
+lui_tb=0;
 
 $display("-Tests Finished- ,Number of Errors: %d",errors);  // Print total error count
 $finish;                         // End simulation

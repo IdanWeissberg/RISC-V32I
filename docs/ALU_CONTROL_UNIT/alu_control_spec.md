@@ -13,6 +13,7 @@ This module is a strictly **Combinatorial Leaf Module**. It operates entirely in
 | `alu_op`        | Input     | 2     | Wire  | Broad operation category issued by the Main Control (e.g., Mem, Branch, R/I-Type). |
 | `funct_3`       | Input     | 3     | Wire  | The 3-bit function code extracted from instruction bits [14:12].            |
 | `funct_7`       | Input     | 7     | Wire  | The 7-bit function code extracted from instruction bits [31:25].            |
+| `lui`           | Input     | 1     | Wire  | LUI override signal from Main Control. When high, forces `ALU_CTRL_LUI` output regardless of `alu_op`. |
 | `alu_op_output` | Output    | 4     | Reg   | The specific 4-bit command routed to the ALU Unit to execute the operation. |
 
 ## 4. Internal Logic & Implementation
@@ -28,6 +29,9 @@ The unit utilizes a nested combinatorial structure (`case` statements) to determ
 
 3. **I-Type Operations (`ALUOP_I_TYPE`)**: 
    Similar to R-Type, it uses `funct_3` for base operation decoding. However, it explicitly **ignores** `funct_7` for standard arithmetic (preventing a non-existent `SUBI` instruction). As a specific RISC-V ISA exception, it **evaluates** `funct_7` solely during Shift operations to distinguish between `SRLI` and `SRAI`.
+
+4. **LUI Override (`lui`)**:
+   When the `lui` signal is asserted by the Main Control Unit, the entire `case` decoding is bypassed. The output is immediately and unconditionally forced to `ALU_CTRL_LUI`, directing the ALU to pass the immediate operand through unchanged. This is required because LUI is a U-Type instruction — it has no `funct_3`/`funct_7` fields and no applicable `alu_op` category.
 
 ### Latch Prevention & Safety Routing
 To ensure robust synthesis and prevent the inference of unwanted memory elements (Latches), the module employs a **Pre-assignment Strategy**. At the beginning of the `always @(*)` block, `alu_op_output` is defaulted to `ALU_CTRL_ADD` (`4'b0000`). This guarantees a defined state even if an unsupported or corrupted `alu_op` is received, favoring a non-destructive add operation over unpredictable ALU behavior.
