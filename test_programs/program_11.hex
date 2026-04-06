@@ -1,0 +1,8 @@
+ffd00093 // addi x1, x0, -3  -> x1 = 0xFFFFFFFD
+00500113 // addi x2, x0, 5   -> x2 = 0x00000005
+0020c463 // blt  x1, x2, +8  -> (signed)-3 < 5 ? Jump : PC+4
+00000193 // addi x3, x0, 0   -> (Skipped)
+00100193 // addi x3, x0, 1   -> x3 = 1
+00115463 // bge  x2, x1, +8  -> (signed)5 >= -3 ? Jump : PC+4
+00000213 // addi x4, x0, 0   -> (Skipped)
+00100213 // addi x4, x0, 1   -> x4 = 1

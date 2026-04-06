@@ -7,6 +7,6 @@ always @(*) begin
     instruction=mem[addr[11:2]]; 
 end
 initial begin
-    $readmemh("program.hex", mem);
+    //$readmemh("program.hex", mem);
 end
 endmodule

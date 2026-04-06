@@ -1,0 +1,2 @@
+deadb0b7 // lui  x1, 0xDEADB      -> x1 = 0xDEADB000
+7ef08093 // addi x1, x1, 0x7EF    -> x1 = x1 + 0x000007EF (Expected: 0xDEADB7EF)

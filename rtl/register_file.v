@@ -9,6 +9,11 @@ module register_file (
     output reg [31:0] read_data_2
 );
 reg [31:0] reg_file [0:31];
+integer i;
+initial begin
+    for (i = 0; i < 32; i = i + 1)
+        reg_file[i] = 32'b0;
+end
 always @(*) begin
     if (read_reg_1==0)
         read_data_1=32'b0;

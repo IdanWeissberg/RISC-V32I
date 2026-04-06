@@ -1,0 +1,7 @@
+00100093 // addi x1, x0, 1     -> x1 = 0x00000001
+01f00293 // addi x5, x0, 31    -> x5 = 31 (0x1F)
+00509133 // sll  x2, x1, x5     -> x2 = 1 << 31 = 0x80000000
+fff00193 // addi x3, x0, -1    -> x3 = 0xFFFFFFFF
+00400313 // addi x6, x0, 4     -> x6 = 4
+4061d233 // sra  x4, x3, x6     -> x4 = 0xFFFFFFFF (Arithmetic)
+0061d2b3 // srl  x5, x3, x6     -> x5 = 0x0FFFFFFF (Logical)

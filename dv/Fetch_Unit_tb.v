@@ -2,7 +2,7 @@
 module fetch_unit_tb ();
     reg clk;
     reg rst_n;
-    reg  pc_sel;
+    reg [1:0] pc_sel;
     reg [31:0] jump_add;
     wire [31:0] pc_out;
     reg  [31:0] prev_pc;

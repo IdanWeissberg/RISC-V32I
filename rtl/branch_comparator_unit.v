@@ -18,19 +18,19 @@ always @(*) begin
                 branch_decision=1;
         end
         `FUNCT3_BLT: begin
-            if($signed(rs_1)<$signed(rs_2))
+            if($signed(rs_1) < $signed(rs_2))
                 branch_decision=1;
         end
         `FUNCT3_BGE :begin
-            if($signed(rs_1)>=$signed(rs_2))
+            if($signed(rs_1) >= $signed(rs_2))
                 branch_decision=1;
         end
         `FUNCT3_BLTU : begin
-            if($unsigned(rs_1)<$unsigned(rs_2))
+            if($unsigned(rs_1) < $unsigned(rs_2))
                 branch_decision=1;
         end
         `FUNCT3_BGEU : begin
-            if($unsigned(rs_1)>=$unsigned(rs_2))
+            if($unsigned(rs_1) >= $unsigned(rs_2))
                 branch_decision=1;
         end
         default: branch_decision=0;

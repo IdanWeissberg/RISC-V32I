@@ -16,7 +16,7 @@ wire [1:0] mem_to_reg_c;              // Writeback select: 00=ALU, 01=MEM, 10=PC
 wire [1:0] alu_op_c;                  // ALU operation group from control unit
 wire [3:0] alu_control_to_alu;        // Final 4-bit ALU operation code
 wire [1:0] pc_sel_c;                        // PC select: 0=PC+4, 1=jump address
-wire [31:0] alu_mem_to_reg;           // Writeback data selected by mem_to_reg mux
+reg  [31:0] alu_mem_to_reg;           // Writeback data selected by mem_to_reg mux
 wire [31:0] jump_add_c;               // Branch/jump target = PC + immediate
 wire [31:0] alu_src_mux ;             // ALU second operand after mux (rs2 or immediate)
 wire [31:0] imm_gen_to_alu_mux;       // Sign-extended immediate from instruction
@@ -96,7 +96,7 @@ alu_unit u_alu_unit(
     .read_data_1 (read_data_1_to_alu),// Operand A (rs1)
     .alu_result (alu_res_to_d_mem)    // Result output
 );
-data_mem u_data_memory(
+data_memory u_data_memory(
     .clk (clk),
     .add_in (alu_res_to_d_mem),       // Memory address from ALU result
     .write_data (read_data_2_c),      // Store data from rs2

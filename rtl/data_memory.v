@@ -1,4 +1,4 @@
-module data_mem #(
+module data_memory #(
     parameter DEPTH = 1024,
     parameter DATA_WIDTH =32
 )(

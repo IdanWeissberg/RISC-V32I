@@ -1,0 +1,8 @@
+00100093 // addi x1, x0, 1     -> x1 = 1
+fff00113 // addi x2, x0, -1    -> x2 = 0xFFFFFFFF
+0020e463 // bltu x1, x2, +8    -> (unsigned)1 < 0xFFFFFFFF ? Jump : PC+4
+00000193 // addi x3, x0, 0     -> (Skipped)
+00100193 // addi x3, x0, 1     -> x3 = 1
+00117463 // bgeu x2, x1, +8    -> (unsigned)0xFFFFFFFF >= 1 ? Jump : PC+4
+00000213 // addi x4, x0, 0     -> (Skipped)
+00100213 // addi x4, x0, 1     -> x4 = 1
