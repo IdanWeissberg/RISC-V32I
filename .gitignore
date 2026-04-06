@@ -11,3 +11,4 @@ results.xml
 .vscode/
 .DS_Store
 Thumbs.db
+.claude/
